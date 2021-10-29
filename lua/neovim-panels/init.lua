@@ -1,4 +1,4 @@
-local config = require('custom.panels.configuration')
+local config = require('neovim-panels.configuration')
 local Module = {}
 
 local diag_symbols = {
@@ -465,12 +465,12 @@ Module.setup = function(user_conf)
     config.set(user_conf)
 
     if config.panel_opts().top.enabled then
-        vim.go.tabline = "%{%v:lua.require'custom.panels'.panel('top')%}"
+        vim.go.tabline = "%{%v:lua.require('neovim-panels').panel('top')%}"
         vim.go.showtabline = 2
     end
     
     if config.panel_opts().bottom.enabled then
-        vim.go.statusline = "%{%v:lua.require'custom.panels'.panel('bottom')%}"
+        vim.go.statusline = "%{%v:lua.require('neovim-panels').panel('bottom')%}"
         vim.go.laststatus= 2
     end
 end
