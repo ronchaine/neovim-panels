@@ -136,7 +136,7 @@ local cprint = function(hl, text)
 end
 
 local break_path = function(path)
-    path, file, ext = string.match(path, "(.-)([^\\/]-%.?([^%.\\/]*))$")
+    local path, file, ext = string.match(path, "(.-)([^\\/]-%.?([^%.\\/]*))$")
     return {
         path = path,
         file = file,
@@ -148,17 +148,23 @@ local current_buffer = function()
     return vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
 end
 
+local is_interesting = function(bufno)
+    return vim.api.nvim_buf_get_option(bufno, 'buflisted') and vim.api.nvim_buf_get_name(bufno) ~= ""
+end
+
 local buffer_list = function()
-    buffers = {}
+    local buffers = {}
     local current_bufno = vim.api.nvim_get_current_buf()
     for _, bufno in ipairs(vim.api.nvim_list_bufs()) do
-        table.insert(buffers, {
-            bufno       = bufno,
-            name        = vim.api.nvim_buf_get_name(bufno),
-            modified    = vim.api.nvim_buf_get_option(bufno, 'modified'),
-            readonly    = vim.api.nvim_buf_get_option(bufno, 'readonly'),
-            active      = bufno == current_bufno,
-        })
+        if is_interesting(bufno) then
+          table.insert(buffers, {
+              bufno       = bufno,
+              name        = vim.api.nvim_buf_get_name(bufno),
+              modified    = vim.api.nvim_buf_get_option(bufno, 'modified'),
+              readonly    = vim.api.nvim_buf_get_option(bufno, 'readonly'),
+              active      = bufno == current_bufno,
+          })
+        end
     end
     return buffers
 end
@@ -204,7 +210,7 @@ local tab_diag = function(bufno, active)
 end
 
 local buffer_tabs = function()
-    tabs = {}
+    local tabs = {}
     local separators_active = { left = '', right = '' }
     local separators_inactive = { left = '', right = '' }
     for _, buf in ipairs(buffer_list()) do
