@@ -1,6 +1,37 @@
 local config = require('custom.panels.configuration')
 local Module = {}
 
+--  symbols = { error = ' ', warn = ' ', info = ' ' },
+
+local diag_symbols = {
+    error = ' ',
+    warning = ' ',
+    info = '🛈 '
+}
+
+local mode_symbols = {
+    n = '🅝 ',
+    i = '🅘 ',
+    v = '🅥 ',
+    [''] = '🆅 ',
+    V = '🅅 ',
+    c = '🅒 ',
+    no = 'no',
+    s = 's',
+    S = 'S',
+    [''] = 'CTRL-S',
+    ic = 'ic',
+    R = '🅡 ',
+    Rv = 'Rv',
+    cv = 'cv',
+    ce = 'ce',
+    r = 'r',
+    rm = 'rm',
+    ['r?'] = 'r?',
+    ['!'] = '!',
+    t = 't',
+}
+
 local break_path = function(path)
     path, file, ext = string.match(path, "(.-)([^\\/]-%.?([^%.\\/]*))$")
     return {
@@ -74,7 +105,7 @@ local git_stats = function()
 
     local rdiff = get_remote_diff(git_root)
 
-    return ' ' .. branch .. '^' .. rdiff.ahead .. 'v' .. rdiff.behind
+    return ' ' .. branch .. ' ↑' .. rdiff.ahead .. ' ↓' .. rdiff.behind
 end
 
 local build_panel = function(conf)
@@ -83,7 +114,7 @@ local build_panel = function(conf)
     if conf.format == 'panels' then
         table.insert(panel, break_path(current_buffer()).file)
     else
-        table.insert(panel, vim.api.nvim_get_mode().mode)
+        table.insert(panel, mode_symbols[vim.api.nvim_get_mode().mode])
         table.insert(panel, git_stats())
     end
     return table.concat(panel)
