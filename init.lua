@@ -45,6 +45,31 @@ local current_buffer = function()
     return vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
 end
 
+local buffer_list = function()
+    buffers = {}
+    local current_bufno = vim.api.nvim_get_current_buf()
+    for _, bufno in ipairs(vim.api.nvim_list_bufs()) do
+        table.insert(buffers, {
+            name        = vim.api.nvim_buf_get_name(bufno),
+            modified    = vim.api.nvim_buf_get_option(bufno, 'modified'),
+            readonly    = vim.api.nvim_buf_get_option(bufno, 'readonly'),
+            active      = bufno == current_bufno,
+        })
+    end
+    return buffers
+end
+
+local buffer_tabs = function()
+    tabs = {}
+    for _, buf in ipairs(buffer_list()) do
+        table.insert(tabs, buf.active and "%#TabLineSel#" or "%#TabLine#")
+        table.insert(tabs, break_path(buf.name).file)
+    end
+
+    return table.concat(tabs)
+end
+
+
 local cmd_stdout = function(cmd)
     local f = assert(io.popen(cmd, 'r'))
     local s = assert(f:read('*a'))
@@ -112,7 +137,7 @@ local build_panel = function(conf)
     local panel = {}
     -- replace this with actual conf
     if conf.format == 'panels' then
-        table.insert(panel, break_path(current_buffer()).file)
+        table.insert(panel, buffer_tabs())
     else
         table.insert(panel, mode_symbols[vim.api.nvim_get_mode().mode])
         table.insert(panel, git_stats())
