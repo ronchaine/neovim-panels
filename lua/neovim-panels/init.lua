@@ -41,11 +41,11 @@ local highlight_table = {
     PanelLSPError           = { fg = '#a00000', bg = colours.panel_background_c },
     PanelLSPWarning         = { fg = '#ffa000', bg = colours.panel_background_c },
     PanelLSPInfo            = { fg = '#20c0ff', bg = colours.panel_background_c },
-    
+
     PanelActiveTabError     = { fg = '#ff0000', bg = '#604288' },
     PanelActiveTabWarning   = { fg = '#ffa000', bg = '#604288' },
     PanelActiveTabInfo      = { fg = '#20c0ff', bg = '#604288' },
-    
+
     PanelInactiveTabError     = { fg = '#a00000', bg = '#000000' },
     PanelInactiveTabWarning   = { fg = '#ffa000', bg = '#000000' },
     PanelInactiveTabInfo      = { fg = '#20c0ff', bg = '#000000' },
@@ -220,7 +220,7 @@ local buffer_tabs = function()
         if buf.readonly then
             table.insert(tabs, file_symbols.readonly)
         end
-        table.insert(tabs, break_path(buf.name).file)
+        table.insert(tabs, vim.api.nvim_exec('echo expand("%")', true))
         if buf.modified then
             table.insert(tabs, file_symbols.modified)
         end
