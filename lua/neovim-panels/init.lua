@@ -220,7 +220,7 @@ local buffer_tabs = function()
         if buf.readonly then
             table.insert(tabs, file_symbols.readonly)
         end
-        table.insert(tabs, vim.api.nvim_exec('echo expand("%")', true))
+        table.insert(tabs, vim.api.nvim_exec('echo expand("#' ..  buf.bufno .. '")', true))
         if buf.modified then
             table.insert(tabs, file_symbols.modified)
         end
